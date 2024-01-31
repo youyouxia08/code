@@ -6,4 +6,6 @@ int main(int argc,char *argv[])
     HelloDialog w;
     w.show();
     return a.exec();
+
+    abd.
 }
