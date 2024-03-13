@@ -1,0 +1,230 @@
+<meta http-equiv="Content-Security-Policy"
+    content="default-src 'self' 'unsafe-inline'; img-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+
+<html>
+    <head>
+        <title>电子文档安全管理系统</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+        <style type=text/css>
+BODY {
+	padding-top:70px;
+	background-repeat: repeat-x;
+	MARGIN: auto;
+	TEXT-ALIGN: center;
+	background-color: #b70b23;
+}
+.login_bg {
+	background-image: url('images/zh/Config.jpg');
+	background-repeat: no-repeat;
+}
+</style>
+        <script type="text/javascript">
+	function changeSafe(){
+		if(document.getElementById("safe").checked){
+			document.getElementById("txtName").innerHTML = '<input type="password" name="name" size="22" value="admin">&nbsp;&nbsp;&nbsp;<input  type="checkbox" id="safe" onclick="changeSafe();" checked="checked">安全输入';
+		}else{
+			document.getElementById("txtName").innerHTML = '<input type="text" name="name" size="20" value="admin">&nbsp;&nbsp;&nbsp;<input  type="checkbox" id="safe" onclick="changeSafe();" >安全输入';
+		}
+			document.myForm.name.focus();
+	}
+
+	function backs() {
+	
+		window.location.href="https://115.236.68.50:9101";
+	
+	}
+	document.onkeydown = KeyDownPressed;
+
+	function KeyDownPressed(event) {
+		var e = event || window.event || arguments.callee.caller.arguments[0];
+		var ctrlKey = e.ctrlKey;//ctrl键
+		var keyCode = e.keyCode;
+		var altKey = e.altKey;//alt键
+		if(altKey && keyCode ==37) {  //屏蔽	alt + ->
+			return false;
+		}else if(altKey && keyCode == 39) {  //屏蔽 alt + <-
+			return false;
+		}else if(ctrlKey && keyCode == 78) {  //屏蔽 Ctrl+n
+			return false;
+		} else if(ctrlKey && keyCode == 79) { //屏蔽 Ctrl+o
+			e.keyCode = 0;
+			e.cancelBubble = true;
+			return false;
+		}else if(keyCode == 116) {//F5
+			e.keyCode = 0;
+			e.cancelBubble = true;
+			return false;
+		} else if(keyCode == 114) {//F3
+			e.keyCode = 0;
+			e.cancelBubble = true;
+			return false;
+		} else if(keyCode == 121) {//屏蔽 shift+F10
+			return false;
+		}else if(keyCode == 13){
+			subCheck();
+		}else {
+			return true;
+		}
+	}
+
+	var keyStr = "ABCDEFGHIJKLMNOP" + "QRSTUVWXYZabcdef" + "ghijklmnopqrstuv"  + "wxyz0123456789+/" + "=";
+	function encode64(input) {
+
+		var output = "";
+		var chr1, chr2, chr3 = "";
+		var enc1, enc2, enc3, enc4 = "";
+		var i = 0;
+		do {
+			chr1 = input.charCodeAt(i++);
+			chr2 = input.charCodeAt(i++);
+			chr3 = input.charCodeAt(i++);
+			enc1 = chr1 >> 2;
+			enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+			enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+			enc4 = chr3 & 63;
+			if (isNaN(chr2)) {
+				enc3 = enc4 = 64;
+			} else if (isNaN(chr3)) {
+				enc4 = 64;
+			}
+			output = output + keyStr.charAt(enc1) + keyStr.charAt(enc2)
+					+ keyStr.charAt(enc3) + keyStr.charAt(enc4);
+			chr1 = chr2 = chr3 = "";
+			enc1 = enc2 = enc3 = enc4 = "";
+		} while (i < input.length);
+
+		return output;
+	}
+
+
+	function encrypt() {
+		// 将密码框的值修改为加密后的
+		var pass=document.myForm.mima.value;
+		pass= encode64(pass);
+		document.getElementById('mima').value =pass;
+	}
+
+	function subCheck(){
+		encrypt();
+		if(document.myForm.verifyCodeDigit.value =="") {
+			alert("请输入验证码！");
+			return false;
+		}
+		if(document.myForm.name.value==""){
+			alert("请输入用户名！");
+			return false;
+		}
+		if(document.myForm.mima.value==""){
+			alert("请输入密码！");
+			return false;
+		}
+		window.document.myForm.submit();
+	}
+
+	function showNextImage(verifyCodeImageTag)
+	{
+		verifyCodeImageTag.src="validatecode/Numletter.jsp?" + Math.random();
+	}
+
+	//开启屏蔽鼠标右键
+	document.oncontextmenu=function(){
+	    return false;
+	};
+
+
+	
+	alert('用户名或密码错误');
+	
+</script>
+        <link rel="stylesheet" href="style/style2/style.css" type="text/css">
+    </head>
+
+    <body>
+        <form name="myForm" method="post" action="SystemConfig">
+            <input type="hidden" name="command" id="command" value="Login">
+            <input type="hidden" name="help" id="help" value="null">
+            <input type="hidden" id="csrfmiddlewaretoken"
+                name="csrfmiddlewaretoken" value="1710123511312">
+            <table height="100%" border=0 align="center" width="430">
+                <tr>
+                    <td>
+                        <table height="298" width="510" class="login_bg"
+                            cellpadding=0 cellspacing=0>
+                            <tr height="60">
+                                <td width="180"></td>
+                                <td colspan="10"></td>
+                            </tr>
+
+                            <tr height="20">
+                                <td></td>
+                                <td></td>
+                                <td colspan="2">
+                                    <input type="hidden" size="6"
+                                        name="verifyCodeDigit" value="dfd" />
+                                </td>
+                            </tr>
+
+                            <tr height="10">
+                                <td width="180"></td>
+                                <td colspan="10"></td>
+                            </tr>
+                            <tr height="20">
+                                <td></td>
+                                <td><font color="#747474">用户名：</font></td>
+                                <td>
+                                    <div id="txtName"><input type="text"
+                                            id="name" name="name" size="20"
+                                            value
+                                            style="width: 150px;">&nbsp;&nbsp;&nbsp;<!-- <input type="checkbox" id="safe" onClick="changeSafe();">安全输入</div> -->
+                                    </td>
+                                </tr>
+                                <tr height="10">
+                                    <td width="180"></td>
+                                    <td colspan="10"></td>
+                                </tr>
+                                <tr height="20">
+                                    <td></td>
+                                    <td valign="middle"><font
+                                            color="#747474">密&nbsp;&nbsp;码：</font></td>
+                                    <td>
+                                        <input type="password" name="mima"
+                                            id="mima" size="22"
+                                            style="width: 150px;">&nbsp;&nbsp;
+                                    </td>
+                                </tr>
+                                <tr height="10">
+                                    <td width="180"></td>
+                                    <td colspan="10"></td>
+                                </tr>
+
+                                <tr height="20">
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <a href="#" onclick="subCheck()"
+                                            style="cursor: hand"
+                                            name="loginButton"
+                                            valign="bottom"><img
+                                                src="images/zh/longin1.jpg"
+                                                border="0" /></a>
+                                        <a href="#" onclick="backs()"
+                                            style="cursor: hand"
+                                            name="loginButton"
+                                            valign="bottom"><img
+                                                src="images/zh/longin2.jpg"
+                                                border="0" /></a>
+                                    </td>
+                                </tr>
+                                <tr height="120">
+                                    <td colspan="10"></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <script type="text/javascript">
+		document.getElementById('name').focus();
+		</script>
+        </body>
+    </html>
